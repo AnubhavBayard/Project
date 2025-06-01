@@ -1,0 +1,396 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cocktail Explorer</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🍹The Bartender</h1>
+        <p class="subtitle">Discover amazing cocktails from TheCocktailDB</p>
+      </header>
+
+      <div class="search-section">
+        <div class="search-grid">
+          <div class="search-group">
+            <form action="/searchByName" method="POST">
+              <label for="searchName">Search by Name:</label>
+              <input
+              type="text"
+              id="searchName"
+              placeholder="e.g Margarita, Mojito"
+              name="name"
+              />
+              <button class="submit-btn" type="submit">Search by Name</button>
+            </form>
+          </div>
+          <div class="search-group">
+            <form action="/searchById" method="POST">
+              <label for="searchId">Search by ID:</label>
+              <input type="number" id="searchId" placeholder="e.g., 11007" name="id"/>
+              <button class="submit-btn" type="submit">Search by ID</button>
+            </form>
+          </div>
+          <div class="search-group">
+            <form action="/filter" method="POST">
+              <label for="filterType">Filter by Type:</label>
+              <select id="filterType" name="select">
+                <option value="Ordinary_Drink">Ordinary_Drink</option>
+                <option value="Cocktail">Cocktail</option>
+              </select>
+              <button class="submit-btn" type="submit">Filter Drinks</button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="button-group">
+          <form action="/random" method="POST">
+            <button class="random-btn" type="submit">🎲 Random Drink</button>
+          </form>
+        </div>
+      </div>
+
+    <% if (locals.array) { %>
+      <% for(let i = 0; i < array.length; i++) { %>
+        <div class="card" style="width: 18rem; margin: 10px; display: inline-block;">
+          <% if (locals.img) { %>
+          <img src="<%= img.drinks[i].strDrinkThumb %>" class="card-img-top" alt="..." />
+          <% } %>
+          <div class="card-body">
+            <p class="card-text">
+              <p>Name: 
+              <% if (locals.name) { %>
+              <%= name.drinks[i].strDrink %>
+              <% } %></p>
+              <p>Id:
+              <% if (locals.id) { %>
+              <%= id.drinks[i].idDrink %>
+              <% } %></p>
+              <% if (locals.instructions) { %>
+              How to drink:
+              <p><%= instructions.drinks[i].strInstructions %></p>
+              <% } %>
+            </p>
+          </div>
+        </div>
+      <% } %>
+    <% } %>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cocktail Explorer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bilbo+Swash+Caps&family=Caveat:wght@400..700&family=Ephesis&family=Italianno&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Meow+Script&family=Playwrite+CO+Guides&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background: linear-gradient(135deg, #000000 0%, #591f93 100%);
+        min-height: 100vh;
+        font-family: 'Arial', sans-serif;
+      }
+
+      .container {
+        max-width: 1200px;
+        padding: 20px;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+        color: white;
+      }
+
+      .meow-script-regular {
+        font-family: "Meow Script", cursive;
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      .ephesis-regular {
+        font-family: "Ephesis", cursive;
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      header h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        font-weight: bold;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .search-section {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        backdrop-filter: blur(10px);
+      }
+
+      .search-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+      }
+
+      .search-group {
+        display: flex;
+        flex-direction: column;
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+      }
+
+      .search-group:hover {
+        border-color: #667eea;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+      }
+
+      .search-group label {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #495057;
+        font-size: 1.1rem;
+      }
+
+      .search-group input,
+      .search-group select {
+        padding: 12px 15px;
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        font-size: 16px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        background-color: white;
+      }
+
+      .search-group input:focus,
+      .search-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+      }
+
+      .submit-btn {
+        background: linear-gradient(45deg, #000000, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        background: linear-gradient(45deg, #5a67d8, #6b46c1);
+      }
+
+      .submit-btn:active {
+        transform: translateY(0);
+      }
+
+      .button-group {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 2px solid #e9ecef;
+      }
+
+      .random-btn {
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 18px;
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+      }
+
+      .random-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        background: linear-gradient(45deg, #ff5252, #d84315);
+      }
+
+      .random-btn:active {
+        transform: translateY(-1px);
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+        overflow: hidden;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      }
+
+      .card-img-top {
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover .card-img-top {
+        transform: scale(1.05);
+      }
+
+      .card-body {
+        padding: 20px;
+      }
+
+      .card-text p {
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+
+      .card-text p:first-child {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #333;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        header h1 {
+          font-size: 2rem;
+        }
+        
+        .search-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .random-btn {
+          padding: 12px 30px;
+          font-size: 16px;
+        }
+        
+        .card {
+          width: 100% !important;
+          margin: 10px 0 !important;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .container {
+          padding: 10px;
+        }
+        
+        .search-section {
+          padding: 20px;
+        }
+        
+        .search-group {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="ephesis-regular">
+        <h1>The Bartender</h1>
+      </header>
+
+      <div class="search-section">
+        <div class="search-grid">
+          <div class="search-group">
+            <form action="/searchByName" method="POST">
+              <label for="searchName">Search by Name:</label>
+              <input
+                type="text"
+                id="searchName"
+                placeholder="e.g Margarita, Mojito"
+                name="name"
+              />
+              <button class="submit-btn" type="submit">Search by Name</button>
+            </form>
+          </div>
+          <div class="search-group">
+            <form action="/searchById" method="POST">
+              <label for="searchId">Search by ID:</label>
+              <input type="number" id="searchId" placeholder="e.g., 11007" name="id"/>
+              <button class="submit-btn" type="submit">Search by ID</button>
+            </form>
+          </div>
+          <div class="search-group">
+            <form action="/filter" method="POST">
+              <label for="filterType">Filter by Type:</label>
+              <select id="filterType" name="select">
+                <option value="Ordinary_Drink">Ordinary Drink</option>
+                <option value="Cocktail">Cocktail</option>
+              </select>
+              <button class="submit-btn" type="submit">Filter Drinks</button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="button-group">
+          <form action="/random" method="POST">
+            <button class="random-btn" type="submit">🎲 Random Drink</button>
+          </form>
+        </div>
+      </div>
+
+      <% if (locals.array) { %>
+        <% for(let i = 0; i < array.length; i++) { %>
+          <div class="card" style="width: 18rem; margin: 10px; display: inline-block;">
+            <% if (locals.img) { %>
+            <img src="<%= img.drinks[i].strDrinkThumb %>" class="card-img-top" alt="..." />
+            <% } %>
+            <div class="card-body">
+              <p class="card-text">
+                <p>Name: 
+                <% if (locals.name) { %>
+                <%= name.drinks[i].strDrink %>
+                <% } %></p>
+                <p>Id:
+                <% if (locals.id) { %>
+                <%= id.drinks[i].idDrink %>
+                <% } %></p>
+                <% if (locals.instructions) { %>
+                How to drink:
+                <p><%= instructions.drinks[i].strInstructions %></p>
+                <% } %>
+              </p>
+            </div>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+  </body>
+</html>
