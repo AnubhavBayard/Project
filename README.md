@@ -31,4 +31,4 @@ node index.js
 ### Go to your browser
 - visit localhost:1000
 
-# Enjoy the website and feel free to send PR's
+# Enjoy the website and feel free to send PR's <3
